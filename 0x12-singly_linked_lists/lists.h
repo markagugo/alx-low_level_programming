@@ -8,7 +8,7 @@
  * @next: points to the next node
  *
  * Description: singly linked list node structure
- * for Holberton project
+ * for 0x12-singly_linked_lists project
  */
 typedef struct list_s
 {

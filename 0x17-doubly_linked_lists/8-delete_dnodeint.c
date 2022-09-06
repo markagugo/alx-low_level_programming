@@ -1,43 +1,50 @@
-#include <stdlib.h>
 #include "lists.h"
-
 /**
- * delete_dnodeint_at_index - Deletes a node from a dlistint_t
- *                            at a given index.
- * @head: A pointer to the head of the dlistint_t.
- * @index: The index of the node to delete.
- *
- * Return: Upon success - 1.
- *         Otherwise - -1.
- */
+  * delete_dnodeint_at_index - Delete a node at a given
+  * index in a doubly linked list
+  * @head: Double pointer to first node in the list
+  * @index: The index to delete the node at
+  * Return: 1 if it's successful, -1 if it failed
+  */
 int delete_dnodeint_at_index(dlistint_t **head, unsigned int index)
 {
-	dlistint_t *tmp = *head;
+	unsigned int pos;
+	dlistint_t *current;
+	dlistint_t *kill_node;
 
 	if (*head == NULL)
 		return (-1);
-
-	for (; index != 0; index--)
+	pos = 0;
+	current = *head;
+	while (current->prev != NULL)
+		current = current->prev;
+	while (current != NULL && pos < index)
 	{
-		if (tmp == NULL)
-			return (-1);
-		tmp = tmp->next;
+		current = current->next;
+		pos++;
 	}
-
-	if (tmp == *head)
+	if (pos < index)
+		return (-1);
+	if (pos == 0 && current->next != NULL)
 	{
-		*head = tmp->next;
-		if (*head != NULL)
-			(*head)->prev = NULL;
+		kill_node = current;
+		current = current->next;
+		current->prev = NULL;
+		*head = current;
+		free(kill_node);
+		return (1);
 	}
-
+	else if (pos > 0)
+	{
+		kill_node = current;
+		current = current->prev;
+		current->next = kill_node->next;
+		free(kill_node);
+	}
 	else
 	{
-		tmp->prev->next = tmp->next;
-		if (tmp->next != NULL)
-			tmp->next->prev = tmp->prev;
+		*head = current->next;
+		free(current);
 	}
-
-	free(tmp);
 	return (1);
 }
